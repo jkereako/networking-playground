@@ -11,6 +11,11 @@ class WebService/*: NSObjectProtocol, NSURLSessionDataDelegate*/ {
       let credential = NSURLCredentialStorage.sharedCredentialStorage()
         .credentialsForProtectionSpace(urlProtectionSpace)[1]
     }
+
+    set {
+      NSURLCredentialStorage.sharedCredentialStorage().setCredential(urlCredential,
+        forProtectionSpace: urlProtectionSpace)
+    }
   }
 
   var mutableURLRequest: NSMutableURLRequest {
@@ -19,7 +24,8 @@ class WebService/*: NSObjectProtocol, NSURLSessionDataDelegate*/ {
         cachePolicy: .UseProtocolCachePolicy,
         timeoutInterval: 60.0)
 
-      aMutableURLRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+      aMutableURLRequest.setValue("application/json",
+        forHTTPHeaderField: "Accept")
       aMutableURLRequest.HTTPMethod = "GET"
 
       return aMutableURLRequest
@@ -59,7 +65,47 @@ class WebService/*: NSObjectProtocol, NSURLSessionDataDelegate*/ {
       handleDataTask(request: mutableURLRequest, completionHandler: completionHandler)
   }
 
+  func postResource(data
+    data: NSData,
+    contentType: String,
+    completionHandler: (request: NSURLRequest, response: AnyObject, anError: NSError) -> Void) {
+      let request = mutableURLRequest
+
+      request.HTTPMethod = "POST"
+      sendResource(
+        request: request,
+        data: data,
+        contentType: contentType,
+        completionHandler: completionHandler)
+  }
+
+  func putResource(data
+    data: NSData,
+    contentType: String,
+    completionHandler: (request: NSURLRequest, response: AnyObject, anError: NSError) -> Void) {
+      let request = mutableURLRequest
+
+      request.HTTPMethod = "PUT"
+      sendResource(
+        request: request,
+        data: data,
+        contentType: contentType,
+        completionHandler: completionHandler)
+  }
+
   // Helpers
+  private func sendResource(request
+    request: NSMutableURLRequest,
+    data: NSData,
+    contentType: String,
+    completionHandler: (request: NSURLRequest, response: AnyObject, anError: NSError) -> Void) {
+
+      request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+      request.HTTPBody = data
+
+      handleDataTask(request: request, completionHandler: completionHandler)
+  }
+
   private func handleDataTask(
     request request: NSMutableURLRequest,
     completionHandler: (request: NSURLRequest, response: AnyObject, error: NSError) -> Void) {
