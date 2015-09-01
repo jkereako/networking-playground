@@ -2,7 +2,7 @@
 
 import UIKit
 
-class WebService/*: NSObjectProtocol, NSURLSessionDataDelegate*/ {
+final class WebService/*: NSObjectProtocol, NSURLSessionDataDelegate*/ {
   let url: NSURL
   let domain: String
   let urlProtectionSpace: NSURLProtectionSpace
@@ -19,7 +19,6 @@ class WebService/*: NSObjectProtocol, NSURLSessionDataDelegate*/ {
   }
 
   var mutableURLRequest: NSMutableURLRequest {
-    get {
       let aMutableURLRequest = NSMutableURLRequest(URL: url,
         cachePolicy: .UseProtocolCachePolicy,
         timeoutInterval: 60.0)
@@ -29,10 +28,9 @@ class WebService/*: NSObjectProtocol, NSURLSessionDataDelegate*/ {
       aMutableURLRequest.HTTPMethod = "GET"
 
       return aMutableURLRequest
-    }
   }
 
-  static let urlSession = {() -> NSURLSession in
+  static var urlSession: NSURLSession {
     let config: NSURLSessionConfiguration
 
     config = NSURLSessionConfiguration.defaultSessionConfiguration()
@@ -42,17 +40,6 @@ class WebService/*: NSObjectProtocol, NSURLSessionDataDelegate*/ {
     config.HTTPMaximumConnectionsPerHost = 5
 
     return NSURLSession(configuration: config)
-  }
-
-  private init(url aURL: NSURL) {
-    url = aURL
-    domain = "the-domain"
-    urlProtectionSpace = NSURLProtectionSpace(
-      host: domain,
-      port: (url.port?.integerValue)!,
-      `protocol`: url.scheme,
-      realm: nil,
-      authenticationMethod: NSURLAuthenticationMethodDefault)
   }
 
   // Factory method
@@ -94,6 +81,17 @@ class WebService/*: NSObjectProtocol, NSURLSessionDataDelegate*/ {
   }
 
   // Helpers
+  private init(url aURL: NSURL) {
+    url = aURL
+    domain = "the-domain"
+    urlProtectionSpace = NSURLProtectionSpace(
+      host: domain,
+      port: (url.port?.integerValue)!,
+      `protocol`: url.scheme,
+      realm: nil,
+      authenticationMethod: NSURLAuthenticationMethodDefault)
+  }
+
   private func sendResource(request
     request: NSMutableURLRequest,
     data: NSData,
