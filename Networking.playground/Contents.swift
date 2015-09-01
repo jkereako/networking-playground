@@ -18,7 +18,7 @@ final class WebService/*: NSObjectProtocol, NSURLSessionDataDelegate*/ {
     }
   }
 
-  var mutableURLRequest: NSMutableURLRequest {
+  private var mutableURLRequest: NSMutableURLRequest {
       let aMutableURLRequest = NSMutableURLRequest(URL: url,
         cachePolicy: .UseProtocolCachePolicy,
         timeoutInterval: 60.0)
@@ -30,7 +30,7 @@ final class WebService/*: NSObjectProtocol, NSURLSessionDataDelegate*/ {
       return aMutableURLRequest
   }
 
-  static var urlSession: NSURLSession {
+  private static var urlSession: NSURLSession {
     let config: NSURLSessionConfiguration
 
     config = NSURLSessionConfiguration.defaultSessionConfiguration()
